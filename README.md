@@ -1,3 +1,11 @@
+---
+title: Rag Chat
+emoji: 🤖
+colorFrom: blue
+colorTo: purple
+sdk: docker
+pinned: false
+---
 # 🧠 RAG Chat Assistant
 
 A production-ready **Retrieval-Augmented Generation (RAG)** chat application built with Python, FastAPI, and Claude AI.
