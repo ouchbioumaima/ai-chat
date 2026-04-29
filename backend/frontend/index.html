@@ -7,43 +7,57 @@
 <style>
 :root{--bg:#0a0a0f;--surface:#111118;--surface2:#1a1a24;--border:#2a2a38;--accent:#7c6af7;--accent2:#f06292;--text:#e8e8f0;--muted:#6b6b88;--green:#4ade80;--red:#f87171;--font:'Syne',sans-serif;--mono:'JetBrains Mono',monospace;}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:var(--font);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
-.app{display:grid;grid-template-columns:270px 1fr;grid-template-rows:56px 1fr;height:100vh;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);height:100vh;overflow:hidden;}
+
+/* ── Auth Screen ── */
+#authScreen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:100;}
+.auth-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px;width:100%;max-width:400px;display:flex;flex-direction:column;gap:24px;}
+.auth-logo{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800;}
+.auth-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.auth-tabs{display:flex;background:var(--surface2);border-radius:10px;padding:4px;gap:4px;}
+.auth-tab{flex:1;padding:8px;text-align:center;border-radius:7px;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);transition:all .2s;}
+.auth-tab.active{background:var(--accent);color:white;}
+.auth-input{background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--font);font-size:14px;padding:12px 14px;width:100%;outline:none;transition:border-color .2s;}
+.auth-input:focus{border-color:var(--accent);}
+.auth-btn{background:linear-gradient(135deg,var(--accent),#9b8dff);border:none;border-radius:10px;color:white;font-family:var(--font);font-size:14px;font-weight:700;padding:13px;cursor:pointer;transition:opacity .2s;}
+.auth-btn:hover{opacity:.9;}
+.auth-error{font-size:13px;color:var(--red);text-align:center;min-height:18px;}
+.auth-footer{font-size:12px;color:var(--muted);text-align:center;line-height:1.6;}
+
+/* ── App ── */
+#app{display:none;grid-template-columns:270px 1fr;grid-template-rows:56px 1fr;height:100vh;}
+#app.visible{display:grid;}
 header{grid-column:1/-1;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px;}
 .logo{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;}
 .logo-icon{width:28px;height:28px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;}
-.header-badge{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--green);background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:3px 10px;border-radius:20px;display:flex;align-items:center;gap:5px;}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.user-badge{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.username-tag{font-family:var(--mono);font-size:12px;color:var(--accent);background:rgba(124,106,247,.1);border:1px solid rgba(124,106,247,.2);padding:4px 12px;border-radius:20px;}
+.logout-btn{background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:12px;padding:4px 10px;cursor:pointer;font-family:var(--font);transition:all .2s;}
+.logout-btn:hover{border-color:var(--red);color:var(--red);}
 aside{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 16px;gap:18px;overflow-y:auto;}
 .section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px;}
 .persona-select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--font);font-size:13px;padding:9px 12px;cursor:pointer;outline:none;}
-/* Voice settings */
 .voice-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;}
 .voice-row{display:flex;align-items:center;justify-content:space-between;}
-.voice-label{font-size:13px;font-weight:600;}
-.voice-sub{font-size:11px;color:var(--muted);}
+.voice-label{font-size:13px;font-weight:600;}.voice-sub{font-size:11px;color:var(--muted);}
 .toggle{position:relative;width:40px;height:22px;}.toggle input{opacity:0;width:0;height:0;}
 .slider{position:absolute;inset:0;background:var(--border);border-radius:22px;transition:.3s;cursor:pointer;}
 .slider:before{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:white;left:3px;top:3px;transition:.3s;}
 input:checked+.slider{background:var(--accent);}input:checked+.slider:before{transform:translateX(18px);}
-.speed-row{display:flex;flex-direction:column;gap:4px;}
-.speed-row label{font-size:11px;color:var(--muted);}
+.speed-row{display:flex;flex-direction:column;gap:4px;}.speed-row label{font-size:11px;color:var(--muted);}
 .speed-slider{width:100%;accent-color:var(--accent);}
-/* Lang selector */
 .lang-select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:12px;padding:6px 10px;cursor:pointer;outline:none;}
-/* History */
-.history-list{display:flex;flex-direction:column;gap:4px;max-height:130px;overflow-y:auto;}
-.history-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;cursor:pointer;font-size:11px;transition:border-color .2s;}
+.history-list{display:flex;flex-direction:column;gap:4px;max-height:160px;overflow-y:auto;}
+.history-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;cursor:pointer;font-size:11px;transition:border-color .2s;display:flex;justify-content:space-between;align-items:center;}
 .history-item:hover{border-color:var(--accent);}
-.history-item .h-persona{color:var(--accent);font-weight:600;}
-.history-item .h-meta{color:var(--muted);font-size:10px;font-family:var(--mono);}
-/* Upload */
+.h-persona{color:var(--accent);font-weight:600;font-size:11px;}
+.h-meta{color:var(--muted);font-size:10px;font-family:var(--mono);}
+.h-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;padding:2px 4px;}
+.h-del:hover{color:var(--red);}
 .upload-zone{border:2px dashed var(--border);border-radius:12px;padding:14px;text-align:center;cursor:pointer;position:relative;}
 .upload-zone:hover{border-color:var(--accent);}
 .upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;}
-.upload-text{font-size:12px;color:var(--muted);}
-.upload-text strong{color:var(--accent);}
+.upload-text{font-size:12px;color:var(--muted);}.upload-text strong{color:var(--accent);}
 .doc-list{display:flex;flex-direction:column;gap:5px;}
 .doc-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;display:flex;align-items:center;gap:8px;font-size:12px;}
 .doc-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -51,218 +65,247 @@ input:checked+.slider{background:var(--accent);}input:checked+.slider:before{tra
 .doc-delete{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:2px 4px;}
 .doc-delete:hover{color:var(--accent2);}
 .empty-docs{font-size:12px;color:var(--muted);text-align:center;padding:8px;}
-/* Main chat */
 main{display:flex;flex-direction:column;overflow:hidden;}
 .messages{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:16px;scroll-behavior:smooth;}
 .messages::-webkit-scrollbar{width:4px;}.messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 .welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:40px;}
-.welcome-icon{font-size:56px;margin-bottom:4px;}
-.welcome h2{font-size:24px;font-weight:800;}
-.welcome p{color:var(--muted);font-size:14px;max-width:340px;line-height:1.7;}
-.welcome .hint{font-family:var(--mono);font-size:12px;color:var(--accent);background:rgba(124,106,247,.1);border:1px solid rgba(124,106,247,.2);padding:8px 16px;border-radius:20px;margin-top:4px;}
+.welcome-icon{font-size:52px;}.welcome h2{font-size:22px;font-weight:800;}.welcome p{color:var(--muted);font-size:14px;max-width:320px;line-height:1.6;}
 .msg{display:flex;gap:12px;animation:fadeUp .3s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .msg.user{flex-direction:row-reverse;}
 .avatar{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.avatar.ai{background:linear-gradient(135deg,var(--accent),var(--accent2));}
-.avatar.user{background:var(--surface2);border:1px solid var(--border);}
+.avatar.ai{background:linear-gradient(135deg,var(--accent),var(--accent2));}.avatar.user{background:var(--surface2);border:1px solid var(--border);}
 .bubble{max-width:68%;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.7;white-space:pre-wrap;position:relative;}
 .msg.user .bubble{background:var(--surface2);border:1px solid var(--border);border-top-right-radius:4px;}
 .msg.ai .bubble{background:#16161f;border:1px solid var(--border);border-top-left-radius:4px;}
-/* Speak button on AI bubble */
-.speak-btn{position:absolute;bottom:8px;right:10px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;opacity:0;transition:opacity .2s;}
+.speak-btn{position:absolute;bottom:8px;right:10px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;opacity:0;transition:opacity .2s;}
 .msg.ai .bubble:hover .speak-btn{opacity:1;}
-.speak-btn.speaking{color:var(--accent);opacity:1;animation:speakPulse 1s infinite;}
-@keyframes speakPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+.speak-btn.speaking{color:var(--accent);opacity:1;}
 .sources{margin-top:8px;padding-top:8px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:4px;}
 .source-tag{font-family:var(--mono);font-size:10px;background:rgba(124,106,247,.15);color:var(--accent);padding:2px 7px;border-radius:4px;border:1px solid rgba(124,106,247,.3);}
 .typing .bubble{padding:14px 18px;}
 .dots{display:flex;gap:4px;}.dots span{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:blink 1.4s infinite;}
 .dots span:nth-child(2){animation-delay:.2s;}.dots span:nth-child(3){animation-delay:.4s;}
 @keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
-/* Input bar */
 .input-bar{padding:16px 24px;border-top:1px solid var(--border);background:var(--surface);display:flex;gap:10px;align-items:flex-end;}
-.input-wrap{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:14px;display:flex;align-items:flex-end;padding:10px 14px;transition:border-color .2s;gap:8px;}
+.input-wrap{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:14px;display:flex;align-items:flex-end;padding:10px 14px;gap:8px;transition:border-color .2s;}
 .input-wrap:focus-within{border-color:var(--accent);}
 textarea{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:var(--font);font-size:14px;resize:none;max-height:120px;line-height:1.5;}
 textarea::placeholder{color:var(--muted);}
-/* Mic button */
+.voice-wave{display:none;align-items:center;gap:3px;padding:0 4px;}
+.voice-wave.active{display:flex;}
+.voice-wave span{display:block;width:3px;border-radius:3px;background:var(--red);animation:wave 1s ease-in-out infinite;}
+.voice-wave span:nth-child(1){height:8px}.voice-wave span:nth-child(2){height:16px;animation-delay:.1s}.voice-wave span:nth-child(3){height:24px;animation-delay:.2s}.voice-wave span:nth-child(4){height:16px;animation-delay:.3s}.voice-wave span:nth-child(5){height:8px;animation-delay:.4s}
+@keyframes wave{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.8)}}
 .mic-btn{width:32px;height:32px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
 .mic-btn:hover{border-color:var(--accent);color:var(--accent);}
 .mic-btn.recording{background:rgba(248,113,113,.15);border-color:var(--red);color:var(--red);animation:micPulse 1s infinite;}
 @keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(248,113,113,.4)}50%{box-shadow:0 0 0 8px rgba(248,113,113,0)}}
 .send-btn{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#9b8dff);border:none;color:white;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s;flex-shrink:0;}
 .send-btn:hover{transform:scale(1.06);}.send-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
-/* Voice wave animation */
-.voice-wave{display:none;align-items:center;gap:3px;padding:0 4px;}
-.voice-wave.active{display:flex;}
-.voice-wave span{display:block;width:3px;border-radius:3px;background:var(--red);animation:wave 1s ease-in-out infinite;}
-.voice-wave span:nth-child(1){height:8px;animation-delay:0s;}
-.voice-wave span:nth-child(2){height:16px;animation-delay:.1s;}
-.voice-wave span:nth-child(3){height:24px;animation-delay:.2s;}
-.voice-wave span:nth-child(4){height:16px;animation-delay:.3s;}
-.voice-wave span:nth-child(5){height:8px;animation-delay:.4s;}
-@keyframes wave{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.8)}}
 .toast{position:fixed;bottom:24px;right:24px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:13px;display:none;z-index:999;}
 .toast.show{display:block;}.toast.error{border-color:rgba(240,98,146,.4);color:var(--accent2);}.toast.success{border-color:rgba(74,222,128,.3);color:var(--green);}
 </style>
 </head>
 <body>
-<div class="app">
-<header>
-  <div class="logo"><div class="logo-icon">🧠</div>RAG Voice Chat</div>
-  <div style="margin-left:12px;color:var(--muted);font-size:13px;">AI · Voice · RAG</div>
-  <div class="header-badge"><div class="dot"></div><span id="statusText">Connecting…</span></div>
-</header>
 
-<aside>
-  <div>
-    <div class="section-label">Persona</div>
-    <select class="persona-select" id="personaSelect">
-      <option value="a helpful assistant">General Assistant</option>
-      <option value="a senior software engineer who answers concisely">Senior Engineer</option>
-      <option value="a data scientist who explains things with examples">Data Scientist</option>
-      <option value="a legal advisor who is careful and thorough">Legal Advisor</option>
-      <option value="a creative writing coach">Creative Coach</option>
-    </select>
+<!-- Auth Screen -->
+<div id="authScreen">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">🧠</div>
+      RAG Voice Chat
+    </div>
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="loginTab" onclick="switchTab('login')">Login</div>
+      <div class="auth-tab" id="registerTab" onclick="switchTab('register')">Register</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <input class="auth-input" id="authUsername" placeholder="Username" autocomplete="username"/>
+      <input class="auth-input" id="authPassword" placeholder="Password" type="password" autocomplete="current-password"/>
+      <div class="auth-error" id="authError"></div>
+      <button class="auth-btn" id="authBtn" onclick="submitAuth()">Login</button>
+    </div>
+    <div class="auth-footer">Your chats are private and only visible to you 🔒</div>
   </div>
+</div>
 
-  <!-- Voice settings -->
-  <div>
-    <div class="section-label">🎙️ Voice Settings</div>
-    <div class="voice-card">
-      <div class="voice-row">
-        <div><div class="voice-label">Auto-speak replies</div><div class="voice-sub">AI talks back to you</div></div>
-        <label class="toggle"><input type="checkbox" id="autoSpeak" checked/><span class="slider"></span></label>
-      </div>
-      <div class="speed-row">
-        <label>Speed: <span id="speedVal">1.0</span>x</label>
-        <input type="range" class="speed-slider" id="speedSlider" min="0.5" max="2" step="0.1" value="1.0"/>
-      </div>
-      <div class="speed-row">
-        <label>Language / Voice</label>
-        <select class="lang-select" id="langSelect">
-          <option value="en-US">🇺🇸 English (US)</option>
-          <option value="en-GB">🇬🇧 English (UK)</option>
-          <option value="fr-FR">🇫🇷 Français</option>
-          <option value="ar-SA">🇸🇦 العربية</option>
-          <option value="es-ES">🇪🇸 Español</option>
-          <option value="de-DE">🇩🇪 Deutsch</option>
-          <option value="zh-CN">🇨🇳 中文</option>
-          <option value="pt-BR">🇧🇷 Português</option>
-        </select>
+<!-- Main App -->
+<div id="app">
+  <header>
+    <div class="logo"><div class="logo-icon">🧠</div>RAG Voice Chat</div>
+    <div style="margin-left:12px;color:var(--muted);font-size:13px;">AI · Voice · Private</div>
+    <div class="user-badge">
+      <span class="username-tag" id="usernameTag">👤 ...</span>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <aside>
+    <div>
+      <div class="section-label">Persona</div>
+      <select class="persona-select" id="personaSelect">
+        <option value="a helpful assistant">General Assistant</option>
+        <option value="a senior software engineer who answers concisely">Senior Engineer</option>
+        <option value="a data scientist who explains things with examples">Data Scientist</option>
+        <option value="a legal advisor who is careful and thorough">Legal Advisor</option>
+        <option value="a creative writing coach">Creative Coach</option>
+      </select>
+    </div>
+    <div>
+      <div class="section-label">🎙️ Voice Settings</div>
+      <div class="voice-card">
+        <div class="voice-row">
+          <div><div class="voice-label">Auto-speak replies</div><div class="voice-sub">AI talks back</div></div>
+          <label class="toggle"><input type="checkbox" id="autoSpeak" checked/><span class="slider"></span></label>
+        </div>
+        <div class="speed-row">
+          <label>Speed: <span id="speedVal">1.0</span>x</label>
+          <input type="range" class="speed-slider" id="speedSlider" min="0.5" max="2" step="0.1" value="1.0"/>
+        </div>
+        <div class="speed-row">
+          <label>Language</label>
+          <select class="lang-select" id="langSelect">
+            <option value="en-US">🇺🇸 English</option>
+            <option value="fr-FR">🇫🇷 Français</option>
+            <option value="ar-SA">🇸🇦 العربية</option>
+            <option value="es-ES">🇪🇸 Español</option>
+            <option value="de-DE">🇩🇪 Deutsch</option>
+          </select>
+        </div>
       </div>
     </div>
-  </div>
-
-  <!-- History -->
-  <div>
-    <div class="section-label">Chat History 💾</div>
-    <div class="history-list" id="historyList"><div class="empty-docs">No saved sessions</div></div>
-  </div>
-
-  <!-- Docs -->
-  <div>
-    <div class="section-label">Knowledge Base</div>
-    <div class="upload-zone">
-      <input type="file" id="fileInput" accept=".txt,.pdf,.md"/>
-      <div style="font-size:22px;margin-bottom:4px;">📄</div>
-      <div class="upload-text"><strong>Click to upload</strong><br>.txt · .pdf · .md</div>
+    <div>
+      <div class="section-label">My Chat History 🔒</div>
+      <div class="history-list" id="historyList"><div class="empty-docs">No saved sessions</div></div>
     </div>
-  </div>
-  <div>
-    <div class="section-label">Indexed Documents</div>
-    <div class="doc-list" id="docList"><div class="empty-docs">No documents yet</div></div>
-  </div>
-</aside>
-
-<main>
-  <div class="messages" id="messages">
-    <div class="welcome" id="welcome">
-      <div class="welcome-icon">🎙️</div>
-      <h2>Voice AI Assistant</h2>
-      <p>Type or speak your question. The AI will answer — and talk back to you!</p>
-      <div class="hint">🎤 Click the mic button or press Space to speak</div>
-    </div>
-  </div>
-
-  <div class="input-bar">
-    <div class="input-wrap">
-      <div class="voice-wave" id="voiceWave">
-        <span></span><span></span><span></span><span></span><span></span>
+    <div>
+      <div class="section-label">Knowledge Base</div>
+      <div class="upload-zone">
+        <input type="file" id="fileInput" accept=".txt,.pdf,.md"/>
+        <div style="font-size:22px;margin-bottom:4px;">📄</div>
+        <div class="upload-text"><strong>Click to upload</strong><br>.txt · .pdf · .md</div>
       </div>
-      <textarea id="msgInput" placeholder="Type or click 🎤 to speak…" rows="1"></textarea>
-      <button class="mic-btn" id="micBtn" title="Hold to speak (or click)">🎤</button>
     </div>
-    <button class="send-btn" id="sendBtn" disabled title="Send">➤</button>
-  </div>
-</main>
+    <div>
+      <div class="section-label">Documents</div>
+      <div class="doc-list" id="docList"><div class="empty-docs">No documents yet</div></div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="messages" id="messages">
+      <div class="welcome" id="welcome">
+        <div class="welcome-icon">🎙️</div>
+        <h2>Welcome back!</h2>
+        <p>Your conversations are private. Type or speak to start chatting.</p>
+      </div>
+    </div>
+    <div class="input-bar">
+      <div class="input-wrap">
+        <div class="voice-wave" id="voiceWave"><span></span><span></span><span></span><span></span><span></span></div>
+        <textarea id="msgInput" placeholder="Type or click 🎤 to speak…" rows="1"></textarea>
+        <button class="mic-btn" id="micBtn">🎤</button>
+      </div>
+      <button class="send-btn" id="sendBtn" disabled>➤</button>
+    </div>
+  </main>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
 const API = '';
-let sessionId = null, isLoading = false;
-let recognition = null, isRecording = false, currentUtterance = null;
+let sessionId = null, isLoading = false, currentUser = null;
+let recognition = null, isRecording = false;
 
-// ── Speech Recognition setup ──────────────────────────────────────────────
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-if (SpeechRecognition) {
-  recognition = new SpeechRecognition();
-  recognition.continuous = false;
-  recognition.interimResults = true;
+// ── Auth ──────────────────────────────────────────────────────────────────────
+let authMode = 'login';
 
-  recognition.onresult = (e) => {
-    const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
-    document.getElementById('msgInput').value = transcript;
-    if (e.results[e.results.length - 1].isFinal) {
-      stopRecording();
-      setTimeout(sendMessage, 300);
-    }
-  };
-  recognition.onend = () => stopRecording();
-  recognition.onerror = (e) => { stopRecording(); showToast('Mic error: ' + e.error, 'error'); };
-} else {
-  document.getElementById('micBtn').style.opacity = '0.3';
-  document.getElementById('micBtn').title = 'Speech recognition not supported in this browser';
+function switchTab(mode) {
+  authMode = mode;
+  document.getElementById('loginTab').classList.toggle('active', mode === 'login');
+  document.getElementById('registerTab').classList.toggle('active', mode === 'register');
+  document.getElementById('authBtn').textContent = mode === 'login' ? 'Login' : 'Create Account';
+  document.getElementById('authError').textContent = '';
 }
 
-// ── Text-to-Speech ────────────────────────────────────────────────────────
+async function submitAuth() {
+  const username = document.getElementById('authUsername').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const errEl = document.getElementById('authError');
+  errEl.textContent = '';
+  if (!username || !password) { errEl.textContent = 'Please fill in all fields'; return; }
+  try {
+    const r = await fetch(`${API}/api/${authMode}`, {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      credentials: 'include',
+      body: JSON.stringify({username, password})
+    });
+    const d = await r.json();
+    if (!r.ok) { errEl.textContent = d.detail; return; }
+    currentUser = username;
+    showApp();
+  } catch { errEl.textContent = 'Server error. Is the backend running?'; }
+}
+
+async function checkAuth() {
+  try {
+    const r = await fetch(`${API}/api/me`, {credentials: 'include'});
+    if (r.ok) {
+      const d = await r.json();
+      currentUser = d.username;
+      showApp();
+    }
+  } catch {}
+}
+
+async function logout() {
+  await fetch(`${API}/api/logout`, {method: 'POST', credentials: 'include'});
+  currentUser = null; sessionId = null;
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('authScreen').style.display = 'flex';
+  document.getElementById('authUsername').value = '';
+  document.getElementById('authPassword').value = '';
+  document.getElementById('messages').innerHTML = '';
+}
+
+function showApp() {
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('app').classList.add('visible');
+  document.getElementById('usernameTag').textContent = '👤 ' + currentUser;
+  init();
+}
+
+// ── Voice ─────────────────────────────────────────────────────────────────────
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SR) {
+  recognition = new SR();
+  recognition.continuous = false; recognition.interimResults = true;
+  recognition.onresult = e => {
+    const t = Array.from(e.results).map(r => r[0].transcript).join('');
+    document.getElementById('msgInput').value = t;
+    if (e.results[e.results.length-1].isFinal) { stopRecording(); setTimeout(sendMessage, 300); }
+  };
+  recognition.onend = () => stopRecording();
+  recognition.onerror = e => { stopRecording(); showToast('Mic: ' + e.error, 'error'); };
+}
+
 function speak(text) {
   if (!window.speechSynthesis) return;
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = document.getElementById('langSelect').value;
   u.rate = parseFloat(document.getElementById('speedSlider').value);
-  currentUtterance = u;
   window.speechSynthesis.speak(u);
   return u;
 }
 
-function speakMessage(btn, text) {
-  if (btn.classList.contains('speaking')) {
-    window.speechSynthesis.cancel();
-    btn.classList.remove('speaking');
-    btn.textContent = '🔊';
-    return;
-  }
-  document.querySelectorAll('.speak-btn.speaking').forEach(b => {
-    b.classList.remove('speaking'); b.textContent = '🔊';
-  });
-  btn.classList.add('speaking');
-  btn.textContent = '⏹';
-  const u = speak(text);
-  if (u) u.onend = () => { btn.classList.remove('speaking'); btn.textContent = '🔊'; };
-}
-
-// ── Recording control ─────────────────────────────────────────────────────
 function startRecording() {
   if (!recognition || isRecording) return;
   window.speechSynthesis.cancel();
   recognition.lang = document.getElementById('langSelect').value;
-  recognition.start();
-  isRecording = true;
+  recognition.start(); isRecording = true;
   document.getElementById('micBtn').classList.add('recording');
   document.getElementById('micBtn').textContent = '⏹';
   document.getElementById('voiceWave').classList.add('active');
@@ -279,64 +322,44 @@ function stopRecording() {
   document.getElementById('msgInput').placeholder = 'Type or click 🎤 to speak…';
 }
 
-document.getElementById('micBtn').addEventListener('click', () => {
-  isRecording ? stopRecording() : startRecording();
-});
-
-// Space bar shortcut to start/stop mic
-document.addEventListener('keydown', (e) => {
-  if (e.code === 'Space' && e.target === document.body) {
-    e.preventDefault();
-    isRecording ? stopRecording() : startRecording();
-  }
-});
-
-// Speed slider
 document.getElementById('speedSlider').addEventListener('input', function() {
   document.getElementById('speedVal').textContent = parseFloat(this.value).toFixed(1);
 });
 
-// ── Init ──────────────────────────────────────────────────────────────────
+// ── Init ──────────────────────────────────────────────────────────────────────
 async function init() {
   await createSession();
-  await loadDocuments();
   await loadHistory();
-  checkHealth();
-}
-
-async function checkHealth() {
-  try {
-    const r = await fetch(`${API}/api/health`);
-    const d = await r.json();
-    document.getElementById('statusText').textContent = `${d.documents_indexed} docs · ${d.total_saved_sessions} saved`;
-  } catch { document.getElementById('statusText').textContent = 'Offline'; }
+  await loadDocuments();
 }
 
 async function createSession() {
   const persona = document.getElementById('personaSelect').value;
-  try {
-    const r = await fetch(`${API}/api/sessions`, {
-      method: 'POST', headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({persona})
-    });
-    const d = await r.json();
-    sessionId = d.session_id;
-    document.getElementById('sendBtn').disabled = false;
-  } catch { showToast('Backend not reachable', 'error'); }
+  const r = await fetch(`${API}/api/sessions`, {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    credentials: 'include', body: JSON.stringify({persona})
+  });
+  const d = await r.json();
+  sessionId = d.session_id;
+  document.getElementById('sendBtn').disabled = false;
 }
 
 async function loadHistory() {
   try {
-    const r = await fetch(`${API}/api/sessions`);
+    const r = await fetch(`${API}/api/sessions`, {credentials: 'include'});
     const d = await r.json();
     const list = document.getElementById('historyList');
     if (!d.sessions.length) { list.innerHTML = '<div class="empty-docs">No saved sessions</div>'; return; }
     list.innerHTML = '';
-    d.sessions.slice(0, 8).forEach(s => {
-      const item = document.createElement('div');
-      item.className = 'history-item';
-      item.innerHTML = `<div class="h-persona">${s.persona.split(' ').slice(0,3).join(' ')}</div><div class="h-meta">${s.message_count} msgs · ${s.created_at.slice(0,10)}</div>`;
-      item.onclick = () => loadSession(s.session_id);
+    d.sessions.slice(0, 10).forEach(s => {
+      const item = document.createElement('div'); item.className = 'history-item';
+      const left = document.createElement('div');
+      left.innerHTML = `<div class="h-persona">${s.persona.split(' ').slice(0,3).join(' ')}</div><div class="h-meta">${s.message_count} msgs · ${s.created_at.slice(0,10)}</div>`;
+      left.style.cursor = 'pointer';
+      left.onclick = () => loadSession(s.session_id);
+      const del = document.createElement('button'); del.className = 'h-del'; del.textContent = '✕';
+      del.onclick = async (e) => { e.stopPropagation(); await fetch(`${API}/api/sessions/${s.session_id}`, {method:'DELETE',credentials:'include'}); loadHistory(); };
+      item.appendChild(left); item.appendChild(del);
       list.appendChild(item);
     });
   } catch {}
@@ -344,7 +367,7 @@ async function loadHistory() {
 
 async function loadSession(sid) {
   hideWelcome();
-  const r = await fetch(`${API}/api/sessions/${sid}/history`);
+  const r = await fetch(`${API}/api/sessions/${sid}/history`, {credentials: 'include'});
   const d = await r.json();
   document.getElementById('messages').innerHTML = '';
   d.history.forEach(m => addMessage(m.role === 'user' ? 'user' : 'ai', m.content, m.sources || [], false));
@@ -352,7 +375,7 @@ async function loadSession(sid) {
   showToast('Session loaded', 'success');
 }
 
-// ── Chat ──────────────────────────────────────────────────────────────────
+// ── Chat ──────────────────────────────────────────────────────────────────────
 async function sendMessage() {
   const input = document.getElementById('msgInput');
   const text = input.value.trim();
@@ -360,135 +383,111 @@ async function sendMessage() {
   hideWelcome();
   addMessage('user', text, [], false);
   input.value = ''; input.style.height = 'auto';
-  isLoading = true;
-  document.getElementById('sendBtn').disabled = true;
+  isLoading = true; document.getElementById('sendBtn').disabled = true;
   const typingId = addTyping();
   try {
     const r = await fetch(`${API}/api/chat`, {
       method: 'POST', headers: {'Content-Type': 'application/json'},
+      credentials: 'include',
       body: JSON.stringify({session_id: sessionId, message: text, use_rag: true})
     });
     const d = await r.json();
     removeTyping(typingId);
     addMessage('ai', d.reply, d.sources, true);
-    loadHistory(); checkHealth();
-  } catch {
-    removeTyping(typingId);
-    addMessage('ai', '⚠️ Could not reach the backend.', [], false);
-  }
-  isLoading = false;
-  document.getElementById('sendBtn').disabled = false;
+    loadHistory();
+  } catch { removeTyping(typingId); addMessage('ai', '⚠️ Error reaching backend.', [], false); }
+  isLoading = false; document.getElementById('sendBtn').disabled = false;
 }
 
-function addMessage(role, text, sources = [], autoSpeak = false) {
+function addMessage(role, text, sources=[], autoSpeak=false) {
   const msgs = document.getElementById('messages');
-  const div = document.createElement('div');
-  div.className = `msg ${role}`;
-  const avatar = document.createElement('div');
-  avatar.className = `avatar ${role}`;
+  const div = document.createElement('div'); div.className = `msg ${role}`;
+  const avatar = document.createElement('div'); avatar.className = `avatar ${role}`;
   avatar.textContent = role === 'ai' ? '🧠' : '👤';
-  const bubble = document.createElement('div');
-  bubble.className = 'bubble';
+  const bubble = document.createElement('div'); bubble.className = 'bubble';
   bubble.textContent = text;
-
-  // Speak button on AI messages
   if (role === 'ai') {
-    const speakBtn = document.createElement('button');
-    speakBtn.className = 'speak-btn';
-    speakBtn.textContent = '🔊';
-    speakBtn.title = 'Read aloud';
-    speakBtn.onclick = () => speakMessage(speakBtn, text);
-    bubble.appendChild(speakBtn);
+    const btn = document.createElement('button'); btn.className = 'speak-btn'; btn.textContent = '🔊';
+    btn.onclick = () => { if(btn.classList.contains('speaking')){window.speechSynthesis.cancel();btn.classList.remove('speaking');btn.textContent='🔊';return;}
+      btn.classList.add('speaking'); btn.textContent = '⏹';
+      const u = speak(text); if(u) u.onend=()=>{btn.classList.remove('speaking');btn.textContent='🔊';};
+    };
+    bubble.appendChild(btn);
   }
-
   if (sources.length) {
     const s = document.createElement('div'); s.className = 'sources';
-    sources.forEach(src => {
-      const t = document.createElement('span'); t.className = 'source-tag';
-      t.textContent = '📄 ' + src; s.appendChild(t);
-    });
+    sources.forEach(src => { const t = document.createElement('span'); t.className = 'source-tag'; t.textContent = '📄 '+src; s.appendChild(t); });
     bubble.appendChild(s);
   }
-
   div.appendChild(avatar); div.appendChild(bubble);
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
-
-  // Auto-speak AI reply
-  if (role === 'ai' && autoSpeak && document.getElementById('autoSpeak').checked) {
-    speak(text);
-  }
+  msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
+  if (role === 'ai' && autoSpeak && document.getElementById('autoSpeak').checked) speak(text);
 }
 
 function addTyping() {
-  const id = 't' + Date.now();
-  const msgs = document.getElementById('messages');
-  const div = document.createElement('div');
-  div.className = 'msg ai typing'; div.id = id;
+  const id = 't'+Date.now(); const msgs = document.getElementById('messages');
+  const div = document.createElement('div'); div.className = 'msg ai typing'; div.id = id;
   div.innerHTML = `<div class="avatar ai">🧠</div><div class="bubble"><div class="dots"><span></span><span></span><span></span></div></div>`;
-  msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
-  return id;
+  msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight; return id;
 }
-
 function removeTyping(id) { document.getElementById(id)?.remove(); }
 function hideWelcome() { document.getElementById('welcome')?.remove(); }
 
-// ── Documents ─────────────────────────────────────────────────────────────
+// ── Documents ─────────────────────────────────────────────────────────────────
 async function loadDocuments() {
   try {
-    const r = await fetch(`${API}/api/documents`);
+    const r = await fetch(`${API}/api/documents`, {credentials: 'include'});
     const d = await r.json();
     const list = document.getElementById('docList');
     if (!d.documents.length) { list.innerHTML = '<div class="empty-docs">No documents yet</div>'; return; }
     list.innerHTML = '';
     d.documents.forEach(doc => {
       const item = document.createElement('div'); item.className = 'doc-item';
-      item.innerHTML = `<span>${doc.filename.endsWith('.pdf') ? '📕' : '📄'}</span><span class="doc-name">${doc.filename}</span><span class="doc-chunks">${doc.chunks}c</span><button class="doc-delete" onclick="deleteDoc('${doc.doc_id}')">✕</button>`;
+      item.innerHTML = `<span>${doc.filename.endsWith('.pdf')?'📕':'📄'}</span><span class="doc-name">${doc.filename}</span><span class="doc-chunks">${doc.chunks}c</span><button class="doc-delete" onclick="deleteDoc('${doc.doc_id}')">✕</button>`;
       list.appendChild(item);
     });
   } catch {}
 }
 
 async function deleteDoc(id) {
-  await fetch(`${API}/api/documents/${id}`, {method: 'DELETE'});
-  loadDocuments(); checkHealth();
+  await fetch(`${API}/api/documents/${id}`, {method:'DELETE',credentials:'include'});
+  loadDocuments();
 }
 
 document.getElementById('fileInput').addEventListener('change', async e => {
   if (!e.target.files[0]) return;
   const fd = new FormData(); fd.append('file', e.target.files[0]);
-  showToast('Indexing ' + e.target.files[0].name + '…');
+  showToast('Indexing…');
   try {
-    const r = await fetch(`${API}/api/documents`, {method: 'POST', body: fd});
+    const r = await fetch(`${API}/api/documents`, {method:'POST', body:fd, credentials:'include'});
     if (!r.ok) throw new Error((await r.json()).detail);
-    await loadDocuments(); checkHealth();
-    showToast('✓ Indexed', 'success');
-  } catch(err) { showToast('Error: ' + err.message, 'error'); }
+    await loadDocuments(); showToast('✓ Indexed', 'success');
+  } catch(err) { showToast('Error: '+err.message, 'error'); }
   e.target.value = '';
 });
 
 document.getElementById('personaSelect').addEventListener('change', async () => {
-  await fetch(`${API}/api/sessions/${sessionId}`, {method: 'DELETE'});
+  if (sessionId) await fetch(`${API}/api/sessions/${sessionId}`, {method:'DELETE',credentials:'include'});
   await createSession();
   document.getElementById('messages').innerHTML = '<div class="welcome" id="welcome"><div class="welcome-icon">🔄</div><h2>Persona updated</h2><p>Start chatting!</p></div>';
 });
 
+document.getElementById('micBtn').addEventListener('click', () => isRecording ? stopRecording() : startRecording());
 document.getElementById('sendBtn').addEventListener('click', sendMessage);
-document.getElementById('msgInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-});
-document.getElementById('msgInput').addEventListener('input', function() {
-  this.style.height = 'auto';
-  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-});
+document.getElementById('msgInput').addEventListener('keydown', e => { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();} });
+document.getElementById('msgInput').addEventListener('input', function(){ this.style.height='auto'; this.style.height=Math.min(this.scrollHeight,120)+'px'; });
 
-function showToast(msg, type = '') {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'toast show' + (type ? ' ' + type : '');
-  setTimeout(() => t.className = 'toast', 3000);
+function showToast(msg, type='') {
+  const t = document.getElementById('toast'); t.textContent = msg;
+  t.className = 'toast show'+(type?' '+type:'');
+  setTimeout(()=>t.className='toast', 3000);
 }
 
-init();
+// Enter key on auth
+document.getElementById('authPassword').addEventListener('keydown', e => { if(e.key==='Enter') submitAuth(); });
+
+// Start
+checkAuth();
 </script>
 </body>
 </html>
